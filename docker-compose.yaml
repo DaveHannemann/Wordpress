@@ -3,7 +3,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    image: wordpress:latest
+    image: wordpress-own:latest
 
     ports:
       - "${HOST_PORT}:${CONTAINER_PORT}"
@@ -17,6 +17,8 @@ services:
 
     volumes:
       - wordpress-data:/var/www/html
+
+    restart: unless-stopped
 
     depends_on:
       - db
@@ -34,6 +36,8 @@ services:
 
     volumes:
       - db-data:/var/lib/mysql
+
+    restart: unless-stopped
 
     networks:
       - wordpress-network
