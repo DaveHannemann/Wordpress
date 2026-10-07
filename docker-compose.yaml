@@ -1,0 +1,46 @@
+services:
+  wordpress:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: wordpress:latest
+
+    ports:
+      - "${HOST_PORT}:${CONTAINER_PORT}"
+
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+
+
+    volumes:
+      - wordpress-data:/var/www/html
+
+    depends_on:
+      - db
+
+    networks:
+      - wordpress-network
+  db:
+    image: mysql:8.0
+
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+    volumes:
+      - db-data:/var/lib/mysql
+
+    networks:
+      - wordpress-network
+
+volumes:
+  wordpress-data:
+  db-data:
+
+networks:
+  wordpress-network:
