@@ -2,7 +2,7 @@
 
 This repository contains a self-hosted WordPress installation running in Docker containers.
 
-The setup consists of a WordPress container based on the official WordPress Apache image and a MySQL database container. Docker Compose is used to build and run the WordPress application, configure the database connection through environment variables, expose WordPress on port 8080, persist WordPress and database data using named volumes, connect both services through a dedicated Docker network, and automatically restart the containers if they terminate unexpectedly.
+The setup consists of a WordPress container based on the official WordPress Apache image and a MySQL database container. Docker Compose is used to run the WordPress application, configure the database connection through environment variables, expose WordPress on port 8080, persist WordPress and database data using named volumes, connect both services through a dedicated Docker network, and automatically restart the containers if they terminate unexpectedly.
 
 The project was created to practice containerization with Docker and Docker Compose, including service communication, environment-based configuration, persistent data, and container networking.
 
@@ -18,6 +18,8 @@ The project was created to practice containerization with Docker and Docker Comp
   - [Database Connection](#database-connection)
   - [Docker Network](#docker-network)
   - [Persistent Data](#persistent-data)
+  - [Container Dependencies](#container-dependencies)
+  - [Automatic Restart](#automatic-restart)
   - [Stopping and Restarting](#stopping-and-restarting)
 - [Technologies](#technologies)
 
@@ -49,10 +51,16 @@ cp example.env .env
 > [!NOTE]
 > Adjust the values in `.env` according to your requirements. The `.env` file contains local configuration and should not be committed to Git.
 
-Build and start the containers:
+Pull the required images:
 
 ```bash
-docker compose up --build -d
+docker compose pull
+```
+
+Start the containers in the background:
+
+```bash
+docker compose up -d
 ```
 
 Check the running containers:
@@ -69,19 +77,14 @@ docker compose logs -f
 
 WordPress is then available on the configured host port.
 
-With the default configuration, open:
-
-```text
-http://localhost:8080
-```
-
 When the project is deployed on a cloud VM, WordPress can be accessed using:
 
 ```text
 http://<your-vm-ip>:8080
 ```
+> [!NOTE]
+> Make sure that TCP port `8080` is allowed by the cloud VM firewall.
 
-Make sure that TCP port `8080` is allowed by the cloud VM firewall.
 
 ## Usage
 
@@ -91,7 +94,6 @@ The main project files are organized as follows:
 
 ```text
 .
-├── Dockerfile
 ├── docker-compose.yaml
 ├── example.env
 ├── .env
@@ -99,7 +101,6 @@ The main project files are organized as follows:
 └── README.md
 ```
 
-- `Dockerfile` defines the custom WordPress Docker image.
 - `docker-compose.yaml` defines and configures the `wordpress` and `db` services.
 - `example.env` provides an example configuration for the required environment variables.
 - `.env` contains the local environment configuration and should not be committed to Git.
@@ -346,12 +347,6 @@ To restart the running containers:
 
 ```bash
 docker compose restart
-```
-
-To rebuild the WordPress image after changing the `Dockerfile`:
-
-```bash
-docker compose up --build -d
 ```
 
 To view the container status:
