@@ -1,9 +1,6 @@
 services:
   wordpress:
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    image: wordpress-own:latest
+    image: wordpress:apache
 
     ports:
       - "${HOST_PORT}:${CONTAINER_PORT}"
